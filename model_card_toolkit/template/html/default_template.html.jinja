@@ -34,12 +34,17 @@
 {% macro metric_name(metric) %}
 {{ metric.type }}{% if metric.threshold %}@{{ metric.threshold }}{% endif %}{% if metric.slice %}, {{ metric.slice }}{% endif %}
 {% endmacro %}
+{% macro confidence_interval(bounds) %}({{ bounds.lower_bound }}, {{ bounds.upper_bound }}){% endmacro %}
+{% macro metric_value(metric) %}
+{% if metric.confidence_interval %}{{ confidence_interval(metric.confidence_interval) }}
+{% else %}{{ metric.value }}{% endif %}
+{% endmacro %}
 {% macro render_metrics_table(metrics) %}
 <table>
   <caption>Performance Metrics</caption>
   <tr><th>Name</th><th>Value</th></tr>
 {% for metric in metrics %}
-  <tr><td>{{ metric_name(metric) }}</td><td>{{ metric.value }}</td></tr>
+  <tr><td>{{ metric_name(metric) }}</td><td>{{ metric_value(metric) }}</td></tr>
 {% endfor %}
 </table>
 {% endmacro %}
